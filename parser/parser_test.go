@@ -351,6 +351,10 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 			"add(a + b + c * d / f + g)",
 			"add((((a + b) + ((c * d) / f)) + g))",
 		},
+		{
+			"a * [1,2,3,4][b * c] * d",
+			"((a * ([1, 2, 3, 4][(b * c)])) * d)",
+		},
 	}
 
 	for _, tt := range tests {
@@ -668,7 +672,7 @@ func TestParsingIndexExpressions(t *testing.T) {
 	checkParserErrors(t, p)
 	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
 	if !ok {
-		t.Errorf("exp is not ast.LetStatement. gpt=%T", program.Statements[0])
+		t.Errorf("exp is not ast.LetStatement. got=%T", program.Statements[0])
 	}
 	indexExp, ok := stmt.Expression.(*ast.IndexExpression)
 	if !testIdentifier(t, indexExp.Left, "myArray") {

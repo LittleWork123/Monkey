@@ -91,6 +91,22 @@ func Eval(node ast.Node, env *object2.Environment) object2.Object {
 			return args[0]
 		}
 		return applyFunction(function, args)
+	case *ast.ArrayLiteral:
+		elements := evalExpressions(node.Elements, env)
+		if len(elements) == 1 && isError(elements[0]) {
+			return elements[0]
+		}
+		return &object2.Array{Elements: elements}
+	case *ast.IndexExpression:
+		left := Eval(node.Left, env)
+		if isError(left) {
+			return left
+		}
+		index := Eval(node.Index, env)
+		if isError(index) {
+			return index
+		}
+		return evalIndexExpression(left, index)
 	}
 	return nil
 }
@@ -318,4 +334,24 @@ func evalStringInfixExpression(operator string, left object2.Object, right objec
 	return &object2.String{
 		Value: leftVal + rightVal,
 	}
+}
+
+func evalIndexExpression(left object2.Object, index object2.Object) object2.Object {
+	switch {
+	case left.Type() == object2.ARRAY_OBJ && index.Type() == object2.INTEGER_OBJ:
+		return evalArrayIndexExpression(left, index)
+	default:
+		return newError("index operator not supported: %s", left.Type())
+	}
+}
+
+// Notion: error handle
+func evalArrayIndexExpression(array object2.Object, index object2.Object) object2.Object {
+	arrayObject := array.(*object2.Array)
+	idx := index.(*object2.Integer).Value
+	max := int64(len(arrayObject.Elements) - 1)
+	if idx < 0 || idx > max {
+		return NULL
+	}
+	return arrayObject.Elements[idx]
 }
