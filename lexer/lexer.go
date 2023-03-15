@@ -95,6 +95,12 @@ func (l *Lexer) NextToken() token2.Token {
 	case '"':
 		token.Literal = l.readString()
 		token.Type = token2.STRING
+	case '[':
+		token = newToken(token2.LBRACKET, l.ch)
+		break
+	case ']':
+		token = newToken(token2.RBRACKET, l.ch)
+		break
 	default:
 		if isLetter(l.ch) {
 			// It has already called function readChar()

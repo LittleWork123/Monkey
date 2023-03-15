@@ -41,6 +41,9 @@ const (
 	RPAREN = ")"
 	LBRACE = "{"
 	RBRACE = "}"
+	// to support array and array[index]
+	LBRACKET = "["
+	RBRACKET = "]"
 
 	// keyword
 	FUNCTION = "FUNCTION"

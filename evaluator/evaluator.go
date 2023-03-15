@@ -14,6 +14,7 @@ var (
 )
 
 var builtins = map[string]object2.Object{
+	// builtin function len
 	"len": &object2.Builtin{
 		Fn: func(args ...object2.Object) object2.Object {
 			if len(args) != 1 {

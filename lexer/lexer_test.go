@@ -22,6 +22,7 @@ func TestNextToken(t *testing.T) {
 	==
  	!=
 	"footbar"
+	[1,2];
 `
 	tests := []struct {
 		expectedType    token2.TokenType
@@ -93,6 +94,14 @@ func TestNextToken(t *testing.T) {
 		{token2.EQ, "=="},
 		{token2.NOT_EQ, "!="},
 		{token2.STRING, "footbar"},
+		//[1,2];
+		{token2.LBRACKET, "["},
+		{token2.INT, "1"},
+		{token2.COMMA, ","},
+		{token2.INT, "2"},
+		{token2.RBRACKET, "]"},
+		{token2.SEMICOLON, ";"},
+
 		{token2.EOF, "\x00"}, // change here
 
 	}
