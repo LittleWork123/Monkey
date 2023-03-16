@@ -508,7 +508,7 @@ func TestIfExpression(t *testing.T) {
 }
 
 func TestFunctionLiteralParsing(t *testing.T) {
-	input := `fn(x, y) { x + y; }`
+	input := `fn(x, y) { x + y ; let x = x + 2; return x; }`
 
 	l := lexer.New(input)
 	p := New(l)
@@ -532,7 +532,7 @@ func TestFunctionLiteralParsing(t *testing.T) {
 			stmt.Expression)
 	}
 
-	if len(function.Parameters) != 2 {
+	if len(function.Parameters) != 3 {
 		t.Fatalf("function literal parameters wrong. want 2, got=%d\n",
 			len(function.Parameters))
 	}
@@ -540,7 +540,7 @@ func TestFunctionLiteralParsing(t *testing.T) {
 	testLiteralExpression(t, function.Parameters[0], "x")
 	testLiteralExpression(t, function.Parameters[1], "y")
 
-	if len(function.Body.Statements) != 1 {
+	if len(function.Body.Statements) != 2 {
 		t.Fatalf("function.Body.Statements has not 1 statements. got=%d\n",
 			len(function.Body.Statements))
 	}
