@@ -665,7 +665,7 @@ func TestParsingArrayLiterals(t *testing.T) {
 }
 
 func TestParsingIndexExpressions(t *testing.T) {
-	input := `myArray[1 + 1];`
+	input := `myArray["123"];`
 	l := lexer.New(input)
 	p := New(l)
 	program := p.ParseProgram()
@@ -678,8 +678,11 @@ func TestParsingIndexExpressions(t *testing.T) {
 	if !testIdentifier(t, indexExp.Left, "myArray") {
 		return
 	}
-	if !testInfixExpression(t, indexExp.Index, 1, "+", 1) {
-		return
+	//if !testInfixExpression(t, indexExp.Index, 1, "+", 1) {
+	//	return
+	//}
+	if indexExp.Index.(*ast.StringLiteral).Value != "123" {
+		t.Errorf("value is not `123`.got=%T", indexExp.Index.(*ast.StringLiteral).Value)
 	}
 }
 

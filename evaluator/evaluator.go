@@ -96,6 +96,14 @@ var builtins = map[string]object2.Object{
 			return &object2.Array{Elements: newElements}
 		},
 	},
+	"puts": &object2.Builtin{
+		Fn: func(args ...object2.Object) object2.Object {
+			for _, arg := range args {
+				fmt.Println(arg.Inspect())
+			}
+			return NULL
+		},
+	},
 }
 
 func Eval(node ast.Node, env *object2.Environment) object2.Object {
@@ -410,6 +418,8 @@ func evalIndexExpression(left object2.Object, index object2.Object) object2.Obje
 	switch {
 	case left.Type() == object2.ARRAY_OBJ && index.Type() == object2.INTEGER_OBJ:
 		return evalArrayIndexExpression(left, index)
+	case left.Type() == object2.HASH_OBJ:
+		return evalHashIndexExpression(left, index)
 	default:
 		return newError("index operator not supported: %s", left.Type())
 	}
@@ -446,4 +456,16 @@ func evalHashLiteral(node *ast.HashLiteral, env *object2.Environment) object2.Ob
 		pairs[hashed] = object2.HashPair{Key: key, Value: value}
 	}
 	return &object2.Hash{Pairs: pairs}
+}
+func evalHashIndexExpression(left object2.Object, index object2.Object) object2.Object {
+	hashObject := left.(*object2.Hash)
+	hashKey, ok := index.(object2.Hashable)
+	if !ok {
+		return newError("unusable as hash key: %s", index.Type())
+	}
+	hashPair, ok := hashObject.Pairs[hashKey.HashKey()]
+	if !ok {
+		return NULL
+	}
+	return hashPair.Value
 }
