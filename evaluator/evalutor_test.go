@@ -388,3 +388,30 @@ func TestArrayIndexExpressions(t *testing.T) {
 		}
 	}
 }
+
+func TestBuiltinFunction(t *testing.T) {
+	tests := []struct {
+		input    string
+		expected interface{}
+	}{
+		{
+			"let arr=[1,2,3];first(arr);",
+			1,
+		},
+		{
+			"let arr=[1,2,3];last(arr);",
+			3,
+		},
+	}
+
+	for _, tt := range tests {
+		evaluated := testEval(tt.input)
+		integer, ok := tt.expected.(int)
+		if ok {
+			testIntegerObject(t, evaluated, int64(integer))
+		} else {
+			testNullObject(t, evaluated)
+		}
+	}
+
+}

@@ -23,9 +23,77 @@ var builtins = map[string]object2.Object{
 			switch arg := args[0].(type) {
 			case *object2.String:
 				return &object2.Integer{Value: int64(len(arg.Value))}
+			case *object2.Array:
+				return &object2.Integer{Value: int64(len(arg.Elements))}
 			default:
 				return newError("argument to `len` not supported, got=%s", args[0].Type())
 			}
+		},
+	},
+	"first": &object2.Builtin{
+		Fn: func(args ...object2.Object) object2.Object {
+			if len(args) != 1 {
+				return newError("wrong number of arguments. got=%d, want=1", len(args))
+			}
+			if args[0].Type() != object2.ARRAY_OBJ {
+				return newError("argument to `first` must be ARRAY,got=%s", args[0].Type())
+			}
+			arr := args[0].(*object2.Array)
+			if len(arr.Elements) > 0 {
+				return arr.Elements[0]
+			} else {
+				return NULL
+			}
+		},
+	},
+	"last": &object2.Builtin{
+		Fn: func(args ...object2.Object) object2.Object {
+			if len(args) != 1 {
+				return newError("wrong number of arguments. got=%d, want=1", len(args))
+			}
+			if args[0].Type() != object2.ARRAY_OBJ {
+				return newError("argument to `last` must be ARRAY, got=%s", args[0].Type())
+			}
+			arr := args[0].(*object2.Array)
+			if len(arr.Elements) > 0 {
+				return arr.Elements[len(arr.Elements)-1]
+			} else {
+				return NULL
+			}
+		},
+	},
+	"rest": &object2.Builtin{
+		Fn: func(args ...object2.Object) object2.Object {
+			if len(args) != 1 {
+				return newError("wrong number of arguments. got=%d, want=1", len(args))
+			}
+			if args[0].Type() != object2.ARRAY_OBJ {
+				return newError("argument to `last` must be ARRAY, got=%s", args[0].Type())
+			}
+			arr := args[0].(*object2.Array)
+			length := len(arr.Elements)
+			if length > 0 {
+				newElements := make([]object2.Object, length-1, length-1)
+				copy(newElements, arr.Elements[1:length])
+				return &object2.Array{Elements: newElements}
+			}
+			return NULL
+		},
+	},
+	"push": &object2.Builtin{
+		Fn: func(args ...object2.Object) object2.Object {
+			if len(args) != 2 {
+				return newError("wrong number of arguments. got=%d, want=2", len(args))
+			}
+			if args[0].Type() != object2.ARRAY_OBJ {
+				return newError("argument to `last` must be ARRAY, got=%s", args[0].Type())
+			}
+			arr := args[0].(*object2.Array)
+			length := len(arr.Elements)
+			newElements := make([]object2.Object, length+1, length+1)
+			copy(newElements, arr.Elements)
+			newElements[length] = args[1]
+			return &object2.Array{Elements: newElements}
 		},
 	},
 }
