@@ -44,7 +44,7 @@ const (
 	// to support array and array[index]
 	LBRACKET = "["
 	RBRACKET = "]"
-
+	COLON    = ":"
 	// keyword
 	FUNCTION = "FUNCTION"
 	LET      = "LET"

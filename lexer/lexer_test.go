@@ -23,6 +23,7 @@ func TestNextToken(t *testing.T) {
  	!=
 	"footbar"
 	[1,2];
+	{"foo":"bar"}
 `
 	tests := []struct {
 		expectedType    token2.TokenType
@@ -102,6 +103,12 @@ func TestNextToken(t *testing.T) {
 		{token2.RBRACKET, "]"},
 		{token2.SEMICOLON, ";"},
 
+		//{"foo":"bar"}
+		{token2.LBRACE, "{"},
+		{token2.STRING, "foo"},
+		{token2.COLON, ":"},
+		{token2.STRING, "bar"},
+		{token2.RBRACE, "}"},
 		{token2.EOF, "\x00"}, // change here
 
 	}

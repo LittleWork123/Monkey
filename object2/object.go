@@ -191,3 +191,7 @@ func (e *Array) Inspect() string {
 	out.WriteString("]")
 	return out.String()
 }
+
+type Hash struct {
+	Pairs map[Object]Object
+}

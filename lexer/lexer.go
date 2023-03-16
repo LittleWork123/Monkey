@@ -101,6 +101,9 @@ func (l *Lexer) NextToken() token2.Token {
 	case ']':
 		token = newToken(token2.RBRACKET, l.ch)
 		break
+	// COLON
+	case ':':
+		token = newToken(token2.COLON, l.ch)
 	default:
 		if isLetter(l.ch) {
 			// It has already called function readChar()
